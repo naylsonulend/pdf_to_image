@@ -8,7 +8,7 @@ import img2pdf
 def convert_file(before_dir, after_dir, file_name):
     file_name = file_name.replace("/", "")
     input_pdf = Path(f"{before_dir}/{file_name}")
-    output_path = Path(f"{after_dir}/{file_name}".replace(" ", "_"))
+    output_path = Path(f"{after_dir}/{file_name}")
     output_pdf = open(output_path, "wb")
 
     pdf_writer = PdfFileWriter()
