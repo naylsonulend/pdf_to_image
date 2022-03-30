@@ -11,29 +11,35 @@ def convert_file(before_dir, after_dir, file_name):
     output_path = Path(f"{after_dir}/{file_name}")
     output_pdf = open(output_path, "wb")
 
+    pdf_reader = PdfFileReader(open(input_pdf, 'rb'))
     pdf_writer = PdfFileWriter()
 
+    last_page = pdf_reader.numPages-1
+
+    for pageNum in range(last_page):
+        pageObj = pdf_reader.getPage(pageNum)
+        pdf_writer.addPage(pageObj)
+
     doc = fitz.open(input_pdf)
-    for page in doc:
-        image_path = f"{after_dir}/temp/image.png"
-        zoom = 3
-        mat = fitz.Matrix(zoom, zoom)
-        image = page.get_pixmap(matrix=mat)
-        image.save(image_path)
+    page = doc[last_page]
+    image_path = f"{after_dir}/temp/image"
+    zoom = 1.5
+    mat = fitz.Matrix(zoom, zoom)
+    image = page.get_pixmap(matrix=mat, dpi=100)
+    image.save(image_path)
 
-        pdf_path = f"{after_dir}/temp/{page.number}-temp.pdf"
+    pdf_path = f"{after_dir}/temp/{page.number}-temp.pdf"
 
-        pdf_bytes = img2pdf.convert(image_path)
-        file_temp = open(pdf_path, "wb")
-        file_temp.write(pdf_bytes)
-        file_temp.close()
+    pdf_bytes = img2pdf.convert(image_path)
+    file_temp = open(pdf_path, "wb")
+    file_temp.write(pdf_bytes)
+    file_temp.close()
 
-        pdf_reader = PdfFileReader(open(pdf_path, "rb"))
-        new_page = pdf_reader.getPage(0)
-        pdf_writer.addPage(new_page)
+    pdf_reader = PdfFileReader(open(pdf_path, "rb"))
+    new_page = pdf_reader.getPage(0)
+    pdf_writer.addPage(new_page)
 
-        if not pdf_path in temp_files:
-            temp_files.append(pdf_path)
+    temp_files.append(pdf_path)
 
     pdf_writer.write(output_pdf)
     output_pdf.close()
