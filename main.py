@@ -25,7 +25,7 @@ def convert_file(before_dir, after_dir, file_name):
     image_path = f"{after_dir}/temp/image"
     zoom = 1.5
     mat = fitz.Matrix(zoom, zoom)
-    image = page.get_pixmap(matrix=mat, dpi=100)
+    image = page.get_pixmap(matrix=mat, dpi=150)
     image.save(image_path)
 
     pdf_path = f"{after_dir}/temp/{page.number}-temp.pdf"
